@@ -4,6 +4,8 @@ kind: Gateway
 metadata:
   name: prod-websocket-gateway
   namespace: default
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: "192.168.100.10"
 spec:
   gatewayClassName: eg
   listeners:
