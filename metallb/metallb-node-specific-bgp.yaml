@@ -1,0 +1,25 @@
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: worker1-to-leaf1
+  namespace: metallb-system
+spec:
+  myASN: 65000
+  peerASN: 64109
+  peerAddress: 10.1.10.251     # Leaf1 BGP IP
+  nodeSelectors:
+  - matchLabels:
+      kubernetes.io/hostname: worker1
+---
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: worker2-to-leaf2
+  namespace: metallb-system
+spec:
+  myASN: 65000
+  peerASN: 64110
+  peerAddress: 10.1.10.252     # Leaf2 BGP IP
+  nodeSelectors:
+  - matchLabels:
+      kubernetes.io/hostname: worker2

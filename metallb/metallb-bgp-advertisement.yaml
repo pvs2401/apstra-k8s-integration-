@@ -1,0 +1,12 @@
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  name: external-advertisement
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - external-pool
+  peers:
+  - worker1-to-leaf1
+  - worker2-to-leaf2
+  aggregationLength: 32         # Advertise /32 routes, not blocks

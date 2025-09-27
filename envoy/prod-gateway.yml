@@ -1,0 +1,28 @@
+# prod-gateway.yaml
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: Gateway
+metadata:
+  name: prod-websocket-gateway
+  namespace: default
+spec:
+  gatewayClassName: eg
+  listeners:
+  - name: https
+    port: 443
+    protocol: HTTPS
+    hostname: "prod.sandbox.dev"
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: prod-sandbox-tls
+        kind: Secret
+    allowedRoutes:
+      namespaces:
+        from: Same
+  - name: http-redirect
+    port: 80
+    protocol: HTTP
+    hostname: "prod.sandbox.dev"
+    allowedRoutes:
+      namespaces:
+        from: Same

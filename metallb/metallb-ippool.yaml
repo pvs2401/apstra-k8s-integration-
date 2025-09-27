@@ -1,0 +1,10 @@
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: external-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 192.168.100.10-192.168.100.50
+  autoAssign: true
+  avoidBuggyIPs: false

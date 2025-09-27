@@ -1,0 +1,28 @@
+# qa-gateway.yaml
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: Gateway
+metadata:
+  name: qa-websocket-gateway
+  namespace: default
+spec:
+  gatewayClassName: eg
+  listeners:
+  - name: https
+    port: 443
+    protocol: HTTPS
+    hostname: "qa.sandbox.dev"
+    tls:
+      mode: Terminate
+      certificateRefs:
+      - name: qa-sandbox-tls
+        kind: Secret
+    allowedRoutes:
+      namespaces:
+        from: Same
+  - name: http-redirect
+    port: 80
+    protocol: HTTP
+    hostname: "qa.sandbox.dev"
+    allowedRoutes:
+      namespaces:
+        from: Same
