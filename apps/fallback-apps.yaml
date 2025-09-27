@@ -1,0 +1,154 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fallback-error-pages
+  namespace: default
+data:
+  prod-index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Service Unavailable - Production</title>
+        <style>
+            body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background-color: #f5f5f5; }
+            .error-container { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: inline-block; }
+            h1 { color: #e74c3c; margin-bottom: 20px; }
+            p { color: #7f8c8d; font-size: 16px; line-height: 1.5; }
+            .status-code { font-size: 72px; font-weight: bold; color: #e74c3c; margin-bottom: 20px; }
+            .env-badge { background: #e74c3c; color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        </style>
+    </head>
+    <body>
+        <div class="error-container">
+            <div class="status-code">503</div>
+            <h1>Backend Service Unavailable</h1>
+            <p>The production application is currently not deployed or experiencing issues.</p>
+            <p>Please try again later or contact the system administrator.</p>
+            <p><span class="env-badge">PRODUCTION</span></p>
+            <p><small>Host: prod.sandbox.dev</small></p>
+        </div>
+    </body>
+    </html>
+  qa-index.html: |
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Service Unavailable - QA</title>
+        <style>
+            body { font-family: Arial, sans-serif; text-align: center; padding: 50px; background-color: #f5f5f5; }
+            .error-container { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); display: inline-block; }
+            h1 { color: #f39c12; margin-bottom: 20px; }
+            p { color: #7f8c8d; font-size: 16px; line-height: 1.5; }
+            .status-code { font-size: 72px; font-weight: bold; color: #f39c12; margin-bottom: 20px; }
+            .env-badge { background: #f39c12; color: white; padding: 5px 15px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        </style>
+    </head>
+    <body>
+        <div class="error-container">
+            <div class="status-code">503</div>
+            <h1>Backend Service Unavailable</h1>
+            <p>The QA application is currently not deployed or experiencing issues.</p>
+            <p>Please try again later or contact the system administrator.</p>
+            <p><span class="env-badge">QA ENVIRONMENT</span></p>
+            <p><small>Host: qa.sandbox.dev</small></p>
+        </div>
+    </body>
+    </html>
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prod-fallback-app
+  namespace: default
+  labels:
+    app: prod-fallback-app
+    environment: prod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prod-fallback-app
+  template:
+    metadata:
+      labels:
+        app: prod-fallback-app
+        environment: prod
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: error-page
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: prod-index.html
+      volumes:
+      - name: error-page
+        configMap:
+          name: fallback-error-pages
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: prod-fallback-service
+  namespace: default
+  labels:
+    app: prod-fallback-app
+    environment: prod
+spec:
+  selector:
+    app: prod-fallback-app
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qa-fallback-app
+  namespace: default
+  labels:
+    app: qa-fallback-app
+    environment: qa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: qa-fallback-app
+  template:
+    metadata:
+      labels:
+        app: qa-fallback-app
+        environment: qa
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: error-page
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: qa-index.html
+      volumes:
+      - name: error-page
+        configMap:
+          name: fallback-error-pages
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: qa-fallback-service
+  namespace: default
+  labels:
+    app: qa-fallback-app
+    environment: qa
+spec:
+  selector:
+    app: qa-fallback-app
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
