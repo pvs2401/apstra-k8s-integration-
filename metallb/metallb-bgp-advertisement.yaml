@@ -7,8 +7,8 @@ spec:
   ipAddressPools:
   - external-pool
   peers:
-  - to-rack1-leaf1
-  - to-rack1-leaf2
-  - to-rack2-leaf1
-  - to-rack2-leaf2
+  - rack1-001-leaf1
+  - rack1-001-leaf2
+  - rack2-001-leaf1
+  - rack2-001-leaf2
   aggregationLength: 32         # Advertise /32 routes, not blocks

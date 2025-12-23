@@ -1,51 +1,51 @@
 apiVersion: metallb.io/v1beta2
 kind: BGPPeer
 metadata:
-  name: to-rack1-leaf1
+  name: rack1-001-leaf1
   namespace: metallb-system
 spec:
-  myASN: 64999
+  myASN: 60101
   peerASN: 64102
-  peerAddress: 10.1.10.201     # Leaf1 BGP IP
+  peerAddress: 10.0.2.201     # Leaf1 BGP IP
   nodeSelectors:
   - matchLabels:
-      kubernetes.io/hostname: worker1
+      kubernetes.io/hostname: worker21
 ---
 apiVersion: metallb.io/v1beta2
 kind: BGPPeer
 metadata:
-  name: to-rack1-leaf2
+  name: rack1-001-leaf2
   namespace: metallb-system
 spec:
-  myASN: 64999
+  myASN: 60101
   peerASN: 64103
-  peerAddress: 10.1.10.202     # Leaf2 BGP IP
+  peerAddress: 10.0.2.202     # Leaf2 BGP IP
   nodeSelectors:
   - matchLabels:
-      kubernetes.io/hostname: worker1      
+      kubernetes.io/hostname: worker21
 ---
 apiVersion: metallb.io/v1beta2
 kind: BGPPeer
 metadata:
-  name: to-rack2-leaf1
+  name: rack2-001-leaf1
   namespace: metallb-system
 spec:
-  myASN: 64999
+  myASN: 60101
   peerASN: 64104
-  peerAddress: 10.1.10.203     # Leaf3 BGP IP
+  peerAddress: 10.0.2.203     # Leaf3 BGP IP
   nodeSelectors:
   - matchLabels:
-      kubernetes.io/hostname: worker2
+      kubernetes.io/hostname: worker22
 ---
 apiVersion: metallb.io/v1beta2
 kind: BGPPeer
 metadata:
-  name: to-rack2-leaf2
+  name: rack2-001-leaf2
   namespace: metallb-system
 spec:
-  myASN: 64999
+  myASN: 60101
   peerASN: 64105
-  peerAddress: 10.1.10.204     # Leaf2 BGP IP
+  peerAddress: 10.0.2.204     # Leaf2 BGP IP
   nodeSelectors:
   - matchLabels:
-      kubernetes.io/hostname: worker2
+      kubernetes.io/hostname: worker22
