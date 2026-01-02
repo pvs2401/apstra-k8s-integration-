@@ -2,21 +2,21 @@
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: Gateway
 metadata:
-  name: prod-websocket-gateway
+  name: tenant2-envoy-gw
   namespace: default
   annotations:
-    metallb.universe.tf/loadBalancerIPs: "192.168.100.10"
+    metallb.universe.tf/loadBalancerIPs: "198.51.100.20"
 spec:
   gatewayClassName: eg
   listeners:
   - name: https
     port: 443
     protocol: HTTPS
-    hostname: "prod.sandbox.dev"
+    hostname: "prod.tenant2.dev"
     tls:
       mode: Terminate
       certificateRefs:
-      - name: prod-sandbox-tls
+      - name: tenant2-tls-cert
         kind: Secret
     allowedRoutes:
       namespaces:
@@ -24,7 +24,7 @@ spec:
   - name: http-redirect
     port: 80
     protocol: HTTP
-    hostname: "prod.sandbox.dev"
+    hostname: "prod.tenant2.dev"
     allowedRoutes:
       namespaces:
         from: Same

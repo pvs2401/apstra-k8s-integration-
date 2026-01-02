@@ -1,26 +1,26 @@
-# qa-websocket-app.yaml
+# prod-websocket-app.yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: websocket-echo-custom-qa
+  name: websocket-echo-tenant2-prod
   labels:
-    app: websocket-echo-custom-qa
-    env: qa
+    app: websocket-echo-tenant2-prod
+    env: production
 spec:
-  replicas: 2
+  replicas: 3
   selector:
     matchLabels:
-      app: websocket-echo-custom-qa
-      env: qa
+      app: websocket-echo-tenant2-prod
+      env: production
   template:
     metadata:
       labels:
-        app: websocket-echo-custom-qa
-        env: qa
+        app: websocket-echo-tenant2-prod
+        env: production
     spec:
       containers:
       - name: websocket-server
-        image: vshenoy83/websocket-echo-headers:v1.0.1
+        image: vshenoy83/websocket-echo-headers:v2.0.5
         ports:
         - containerPort: 3000
           name: http
@@ -28,7 +28,9 @@ spec:
         - name: PORT
           value: "3000"
         - name: ENVIRONMENT
-          value: "QA"
+          value: "TENANT2-APP"
+        - name: FONT_COLOR
+          value: "blue"
         - name: HOSTNAME
           valueFrom:
             fieldRef:
@@ -65,14 +67,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: websocket-echo-custom-qa-service
+  name: websocket-echo-tenant2-prod-service
   labels:
-    app: websocket-echo-custom-qa
-    env: qa
+    app: websocket-echo-tenant2-prod
+    env: production
 spec:
   selector:
-    app: websocket-echo-custom-qa
-    env: qa
+    app: websocket-echo-tenant2-prod
+    env: production
   ports:
   - name: http
     port: 80
