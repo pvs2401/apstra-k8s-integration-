@@ -141,7 +141,7 @@ echo "2. Verify BGP sessions are established"
 echo "3. Test with a LoadBalancer service"
 echo ""
 echo -e "${YELLOW}To apply BGP configuration:${NC}"
-echo "kubectl apply -f metallb-bgp-complete.yaml"
+echo "kubectl apply -f ../metallb/cluster1-metallb-config.yaml"
 echo ""
 echo -e "${YELLOW}To verify BGP sessions:${NC}"
 echo 'for i in $(kubectl get pod -n metallb-system -l component=speaker | grep -v NAME | awk '"'"'{print $1}'"'"'); do'
@@ -149,5 +149,5 @@ echo '    kubectl logs -n metallb-system $i --tail=50 | grep -i "BGP session"'
 echo 'done'
 echo ""
 echo -e "${YELLOW}To check MetalLB resources:${NC}"
-echo "kubectl get ipaddresspool,bgppeer,bgpadvertisement -n metallb-system"
+echo "kubectl get ipaddresspools.metallb.io,bgppeer.metallb.io,bgpadvertisement.metallb.io -n metallb-system"
 echo ""
