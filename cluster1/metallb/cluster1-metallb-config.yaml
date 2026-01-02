@@ -1,0 +1,89 @@
+---
+# MetalLB IP Address Pool for Tenant-A
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: pool-tenant-a
+  namespace: metallb-system
+spec:
+  addresses:
+  - 198.51.100.10-198.51.100.19
+  autoAssign: true
+  avoidBuggyIPs: false
+
+---
+# BGP Peer: worker11 -> Leaf1
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: rack1-001-leaf1-vrf-tenant-a
+  namespace: metallb-system
+spec:
+  myASN: 60101
+  peerASN: 64102
+  peerAddress: 10.0.1.201
+  nodeSelectors:
+  - matchLabels:
+      kubernetes.io/hostname: worker11
+
+---
+# BGP Peer: worker11 -> Leaf2
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: rack1-001-leaf2-vrf-tenant-a
+  namespace: metallb-system
+spec:
+  myASN: 60101
+  peerASN: 64103
+  peerAddress: 10.0.1.202
+  nodeSelectors:
+  - matchLabels:
+      kubernetes.io/hostname: worker11
+
+---
+# BGP Peer: worker12 -> Leaf3
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: rack2-001-leaf1-vrf-tenant-a
+  namespace: metallb-system
+spec:
+  myASN: 60101
+  peerASN: 64104
+  peerAddress: 10.0.1.203
+  nodeSelectors:
+  - matchLabels:
+      kubernetes.io/hostname: worker12
+
+---
+# BGP Peer: worker12 -> Leaf4
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: rack2-001-leaf2-vrf-tenant-a
+  namespace: metallb-system
+spec:
+  myASN: 60101
+  peerASN: 64105
+  peerAddress: 10.0.1.204
+  nodeSelectors:
+  - matchLabels:
+      kubernetes.io/hostname: worker12
+
+---
+# BGP Advertisement Configuration
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  name: external-advertisement
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+  - pool-tenant-a
+  peers:
+  - rack1-001-leaf1-vrf-tenant-a
+  - rack1-001-leaf2-vrf-tenant-a
+  - rack2-001-leaf1-vrf-tenant-a
+  - rack2-001-leaf2-vrf-tenant-a
+  aggregationLength: 32

@@ -1,16 +1,16 @@
-# qa-httproute.yaml
+# prod-httproute.yaml
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: HTTPRoute
 metadata:
-  name: qa-websocket-route
+  name: prod-websocket-route
   namespace: default
 spec:
   parentRefs:
-  - name: qa-websocket-gateway
+  - name: tenant1-envoy-gw
     namespace: default
     sectionName: https
   hostnames:
-  - "qa.sandbox.dev"
+  - "prod.tenant1.dev"
   rules:
   # WebSocket upgrade rule
   - matches:
@@ -23,38 +23,38 @@ spec:
       - name: "Upgrade"
         value: "websocket"
     backendRefs:
-    - name: websocket-echo-custom-qa-service
+    - name: websocket-echo-tenant1-prod-service
       port: 80
       weight: 100
-    - name: qa-fallback-service
+    - name: prod-fallback-service
       port: 80
       weight: 0
-  # Regular HTTP rule  
+  # Regular HTTP rule
   - matches:
     - path:
         type: PathPrefix
         value: /
     backendRefs:
-    - name: websocket-echo-custom-qa-service
+    - name: websocket-echo-tenant1-prod-service
       port: 80
       weight: 100
-    - name: qa-fallback-service
+    - name: prod-fallback-service
       port: 80
       weight: 0
 ---
-# HTTP to HTTPS redirect for QA
+# HTTP to HTTPS redirect for production
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: HTTPRoute
 metadata:
-  name: qa-websocket-redirect
+  name: prod-websocket-redirect
   namespace: default
 spec:
   parentRefs:
-  - name: qa-websocket-gateway
+  - name: prod-websocket-gateway
     namespace: default
     sectionName: http-redirect
   hostnames:
-  - "qa.sandbox.dev"
+  - "prod.tenant1.dev"
   rules:
   - filters:
     - type: RequestRedirect
