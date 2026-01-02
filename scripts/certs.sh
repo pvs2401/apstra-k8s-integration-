@@ -1,7 +1,7 @@
 #!/bin/sh +x
 
 # Set tenant name from command line argument (default to tenant1)
-TENANT=${1:-tenant1}
+TENANT=${1:-tenant2}
 
 # Create certificates directory
 mkdir -p /tmp/certs/${TENANT}
